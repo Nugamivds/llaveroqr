@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Video Llavero</title>
+    <style>
+        /* Pantalla completa y fondo negro */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: #000; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        /* El video ocupa toda la pantalla sin deformarse */
+        video { 
+            width: 100vw; 
+            height: 100vh; 
+            object-fit: contain; 
+        }
+
+        /* Botón flotante para el sonido (obligatorio en celulares) */
+        #btnSonido {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #000;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 100;
+            transition: 0.3s;
+        }
+
+        #btnSonido:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <video id="miVideo" playsinline autoplay muted loop>
+        <source src="video.mp4" type="video/mp4">
+        Tu navegador no soporta video.
+    </video>
+
+    <button id="btnSonido" onclick="activarAudio()">🔊 Tocar para escuchar</button>
+
+    <script>
+        function activarAudio() {
+            const v = document.getElementById('miVideo');
+            v.muted = false; // Quita el silencio
+            v.play();        // Asegura que siga reproduciendo
+            document.getElementById('btnSonido').style.display = 'none'; // Desaparece el botón
+        }
+
+        // Intento de autoreproducir si el navegador lo permite
+        window.addEventListener('load', () => {
+            const v = document.getElementById('miVideo');
+            v.play().catch(() => {
+                console.log("El autoreproducir requiere interacción del usuario.");
+            });
+        });
+    </script>
+</body>
+</html>
