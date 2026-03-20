@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Video Llavero</title>
+    <title>Recuerdo Especial</title>
     <style>
-        /* Pantalla completa y fondo negro */
+        /* Pantalla completa y fondo negro profundo */
         body, html { 
             margin: 0; 
             padding: 0; 
@@ -16,63 +16,90 @@
             justify-content: center; 
             align-items: center; 
             overflow: hidden;
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* El video ocupa toda la pantalla sin deformarse */
+        /* Video optimizado para celulares */
         video { 
             width: 100vw; 
             height: 100vh; 
-            object-fit: contain; 
+            object-fit: contain; /* Mantiene la proporción sin estirar */
+            display: block;
         }
 
-        /* Botón flotante para el sonido (obligatorio en celulares) */
+        /* Botón de sonido estilizado */
         #btnSonido {
             position: fixed;
-            bottom: 40px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 15px 30px;
-            background: rgba(255, 255, 255, 0.8);
+            padding: 18px 35px;
+            background: rgba(255, 255, 255, 0.9);
             color: #000;
             border: none;
             border-radius: 50px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
             z-index: 100;
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
 
         #btnSonido:active {
-            transform: translateX(-50%) scale(0.95);
+            transform: translateX(-50%) scale(0.9);
+            background: #fff;
+        }
+
+        /* Mensaje de error si el video no carga */
+        #errorMsg {
+            display: none;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: absolute;
         }
     </style>
 </head>
 <body>
 
-    <video id="miVideo" playsinline autoplay muted loop>
+    <div id="errorMsg">
+        <p>⚠️ No se encontró el archivo <b>video.mp4</b></p>
+        <p>Asegúrate de que el video esté en la misma carpeta que este código.</p>
+    </div>
+
+    <video id="miVideo" playsinline autoplay muted loop preload="auto">
         <source src="video.mp4" type="video/mp4">
-        Tu navegador no soporta video.
+        <source src="video.mov" type="video/quicktime">
+        Tu navegador no es compatible con este video.
     </video>
 
     <button id="btnSonido" onclick="activarAudio()">🔊 Tocar para escuchar</button>
 
     <script>
+        const video = document.getElementById('miVideo');
+        const btn = document.getElementById('btnSonido');
+        const error = document.getElementById('errorMsg');
+
+        // Función para activar el audio
         function activarAudio() {
-            const v = document.getElementById('miVideo');
-            v.muted = false; // Quita el silencio
-            v.play();        // Asegura que siga reproduciendo
-            document.getElementById('btnSonido').style.display = 'none'; // Desaparece el botón
+            video.muted = false;
+            video.play();
+            btn.style.display = 'none';
         }
 
-        // Intento de autoreproducir si el navegador lo permite
+        // Si el video falla al cargar, muestra el error
+        video.onerror = function() {
+            video.style.display = 'none';
+            btn.style.display = 'none';
+            error.style.display = 'block';
+        };
+
+        // Forzar reproducción al cargar (en silencio)
         window.addEventListener('load', () => {
-            const v = document.getElementById('miVideo');
-            v.play().catch(() => {
-                console.log("El autoreproducir requiere interacción del usuario.");
-            });
+            video.play().catch(e => console.log("Esperando interacción..."));
         });
     </script>
 </body>
